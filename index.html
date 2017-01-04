@@ -6,13 +6,28 @@
 <body>
   <script>
 
-  
+  // create an instance of ArteParser
   var ap = new ArteParser("http://www.arte.tv/guide/fr/062863-000-A/charlie-louise");
   ap.fetchData();
 
-  ap.onLoaded( function(data){
-    console.log(data);
+
+  // called when the TV program data are all fetched
+  ap.onLoaded( function(programData){
+    console.log(programData);
+
+    // Optional: Fetching the suggestions can be done only when the data for _this_ program are fetched
+    ap.fetchSuggestions();
   });
+
+  // An error may occur, i.e. if the program url does not lead to any program
+  ap.onError( function(msg){
+    console.log(msg);
+  });
+
+  // Since we called ap.fetchSuggestions() earlier, we have to deal with the result, here an array
+  ap.onSuggestionsFetched( function(programDataArray){
+    console.log(programDataArray);
+  })
 
   </script>
 </body>
