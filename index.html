@@ -1,0 +1,24 @@
+<html>
+<head>
+  <script src="js/AjaxJson.js"></script>
+  <script src="js/ArteParser.js"></script>
+</head>
+<body>
+  <script>
+
+
+
+/*
+getJSON('https://api.arte.tv/api/player/v1/config/fr/050740-000', function(data) {
+	console.log(data);
+}, function(status) {
+	console.log('Something went wrong.');
+});
+*/
+
+  var ap = new ArteParser("http://www.arte.tv/guide/fr/062863-000-A/charlie-louise");
+  ap.fetchData();
+
+  </script>
+</body>
+</html>
