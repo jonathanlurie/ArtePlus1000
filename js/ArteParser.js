@@ -158,8 +158,10 @@ ArteParser.prototype.fetchSuggestions = function(){
 
   var that = this;
 
+  if( !this._rawData.videoJsonPlayer.hasOwnProperty("postroll") )
+    return;
+
   var postrollURL = this._rawData.videoJsonPlayer.postroll;
-  //console.log(postrollURL);
 
   getJSON(postrollURL, function(data) {
     that._numberOfSuggestion =  data.videoList.length;
