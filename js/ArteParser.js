@@ -10,23 +10,28 @@ var ArteParser = function( programURL ){
   this._programData = null;
   this._onLoadedCallback = null;
   this._onErrorCallback = null;
+  this._onNotValidCallback = null;
   this._onSuggestionsFetchedCallback = null;
   this._suggestions = [];
   this._numberOfSuggestion = 0;
-  this._extractProgramID();
+  //this.run();
 }
 
 
 /**
 * Extract the unique ID using the programURL
 */
-ArteParser.prototype._extractProgramID = function(){
-  var reURLPattern = /arte.tv[\/]guide[\/]([\S]{2})[\/](.*)[\/](.*)/g;
+ArteParser.prototype.run = function(){
+  var reURLPattern = /arte.tv[\/]([\S]{2})[\/]videos[\/](.*)[\/](.*)/g;
   var match  = reURLPattern.exec( this._programURL );
 
   if(match){
     this._programLang = match[1];
     this._programID = match[2];
+  }else{
+    if(this._onNotValidCallback){
+      this._onNotValidCallback();
+    }
   }
 }
 
@@ -133,6 +138,15 @@ ArteParser.prototype.onLoaded = function( cb ){
 */
 ArteParser.prototype.onError = function( cb ){
   this._onErrorCallback = cb;
+}
+
+
+/**
+* Defines the callback when the URL is not a valid Arte+7 URL.
+* @param {function} cb - Callback with no arg
+*/
+ArteParser.prototype.onNotValid = function( cb ){
+  this._onNotValidCallback = cb;
 }
 
 

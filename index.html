@@ -2,12 +2,169 @@
 <head>
   <script src="js/AjaxJson.js"></script>
   <script src="js/ArteParser.js"></script>
+
+  <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+
+
+  <style>
+
+  body {
+    margin: 0;
+    background-color: #444;
+  }
+
+  textarea, input, button {
+    outline: none;
+  }
+
+  #content {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    width: 80%;
+    height: 80%;
+    background-color: rgba(255, 255, 255, 0.5);
+  }
+
+  #logo {
+    position: relative;
+    width: 100%;
+    height: 25%;
+  }
+
+  #logo img {
+    width: 30%;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+  }
+
+  #search {
+    position: relative;
+    width: 100%;
+    height: 75%;
+  }
+
+  #search input {
+    width: 70%;
+    height: 2em;
+    position: absolute;
+    top: 0px;
+    bottom: 25%;
+    left: 0;
+    right: 0;
+    margin: auto;
+    text-align: center;
+    font-size: xx-large;
+    background-color: rgba(255, 255, 255, 0.5);
+    border: none;
+    border-color: #ff5f36;
+    border-style: solid;
+    border-width: 2px;
+    color: #ff5f36;
+
+  }
+
+  </style>
+
 </head>
 <body>
+
+  <div id="content">
+    <div id="logo">
+      <img  src="img/logo.png">
+    </div>
+
+    <div id="search">
+      <input id="urlInput" type="text" placeholder="URL du programme Arte+7" onkeyup="checkUrl(event)">
+    </div>
+
+  </div>
+
+
+
+
+
+
   <script>
 
+  function queryString() {
+    // This function is anonymous, is executed immediately and
+    // the return value is assigned to QueryString!
+    var query_string = {};
+    var query = window.location.search.substring(1);
+
+    // if no argument, return null
+    if(!query.length){
+      return null;
+    }
+
+    var vars = query.split("&");
+
+    for (var i=0;i<vars.length;i++) {
+      var pair = vars[i].split("=");
+      var decodedUriComponent = decodeURIComponent(pair[1]);
+
+      if (decodedUriComponent === "undefined"){
+        query_string[pair[0]] = undefined;
+      }else if( isNaN( decodedUriComponent )){
+        query_string[pair[0]] = decodedUriComponent;
+      }else{
+        query_string[pair[0]] = Number(decodedUriComponent);
+      }
+    }
+
+    return query_string;
+  };
+
+  var urlParam = queryString();
+
+
+
+  function checkUrl(e){
+    var url = document.getElementById('urlInput').value.trim();
+
+    // create an instance of ArteParser
+    var ap = new ArteParser(url);
+    ap.fetchData();
+
+
+    // called when the TV program data are all fetched
+    ap.onLoaded( function(programData){
+      console.log(programData);
+
+      // Optional: Fetching the suggestions can be done only when the data for _this_ program are fetched
+      //ap.fetchSuggestions();
+    });
+
+    ap.onNotValid( function(){
+      console.log("URL is not valid");
+    });
+
+    // An error may occur, i.e. if the program url does not lead to any program
+    ap.onError( function(msg){
+      console.log(msg);
+    });
+
+    /*
+    // Since we called ap.fetchSuggestions() earlier, we have to deal with the result, here an array
+    ap.onSuggestionsFetched( function(programDataArray){
+      console.log(programDataArray);
+    })
+    */
+
+    ap.run();
+  }
+
+/*
   // create an instance of ArteParser
-  var ap = new ArteParser("http://www.arte.tv/guide/fr/067846-011-A/le-dessous-des-cartes");
+  var ap = new ArteParser("http://www.arte.tv/fr/videos/069085-000-F/le-fils-de-neandertal-ou-le-secret-de-nos-origines");
   ap.fetchData();
 
 
@@ -28,7 +185,7 @@
   ap.onSuggestionsFetched( function(programDataArray){
     console.log(programDataArray);
   })
-
+*/
   </script>
 </body>
 </html>
