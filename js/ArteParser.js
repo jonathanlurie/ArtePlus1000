@@ -28,6 +28,7 @@ ArteParser.prototype.run = function(){
   if(match){
     this._programLang = match[1];
     this._programID = match[2];
+    this.fetchData();
   }else{
     if(this._onNotValidCallback){
       this._onNotValidCallback();
@@ -178,6 +179,11 @@ ArteParser.prototype.fetchSuggestions = function(){
   var postrollURL = this._rawData.videoJsonPlayer.postroll;
 
   getJSON(postrollURL, function(data) {
+    // possibly, there is no suggestion
+    if(!("videoList" in data)){
+      return;
+    }
+
     that._numberOfSuggestion =  data.videoList.length;
 
     // for each suggestion, we try to fetch it.
@@ -186,7 +192,7 @@ ArteParser.prototype.fetchSuggestions = function(){
 
       // we build an ArteParser for each suggestion too
       var sugg = new ArteParser(suggestionProgramURL);
-      sugg.fetchData();
+      sugg.run();
 
       // Much inception in this code!
       sugg.onLoaded( function(data){

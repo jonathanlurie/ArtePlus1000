@@ -1,5 +1,6 @@
 <html>
 <head>
+  <meta charset="UTF-8">
   <script src="js/AjaxJson.js"></script>
   <script src="js/ArteParser.js"></script>
 
@@ -11,9 +12,21 @@
   body {
     margin: 0;
     background-color: #444;
+    font-family: Helvetica, Arial, Sans-Serif;
+
+
   }
 
-  textarea, input, button {
+
+  #background {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+
+  }
+
+
+  textarea, input, button, select {
     outline: none;
   }
 
@@ -48,7 +61,7 @@
   #search {
     position: relative;
     width: 100%;
-    height: 75%;
+    height: 20%;
   }
 
   #search input {
@@ -71,10 +84,56 @@
 
   }
 
+  #videoInfo {
+    position: relative;
+    width: 100%;
+    height: 55%;
+    background-color: #FAA;
+  }
+
+  #videoInfo #programTitle {
+    width: 100%;
+    height: 20%;
+    text-align: center;
+    font-size: xx-large;
+  }
+
+  #videoInfo #programAbstract {
+    width: 100%;
+    height: 30%;
+    text-align: center;
+    font-size: large;
+  }
+
+  #videoVersion {
+    width: 70%;
+    height: 15%;
+    margin-top: 2%;
+    margin-bottom: 2%;
+    font-size: xx-large;
+    margin-left: 15%;
+    margin-right: 15%;
+    color: #ff5f36;
+    border-color: #a03f27;
+  }
+
+  #downloadBt {
+    background-color: antiquewhite;
+height: 15%;
+width: 30%;
+margin-left: 35%;
+margin-right: 35%;
+/* margin-top: 3%; */
+  }
+
   </style>
 
 </head>
 <body>
+
+  <div id="background">
+
+  </div>
 
   <div id="content">
     <div id="logo">
@@ -83,6 +142,22 @@
 
     <div id="search">
       <input id="urlInput" type="text" placeholder="URL du programme Arte+7" onkeyup="checkUrl(event)">
+    </div>
+
+    <div id="videoInfo">
+      <div id="programTitle">
+      </div>
+
+      <div id="programAbstract">
+      </div>
+
+      <select id="videoVersion">
+      </select>
+
+      <div id="downloadBt">
+        Télécharger
+      </div>
+
     </div>
 
   </div>
@@ -132,15 +207,36 @@
 
     // create an instance of ArteParser
     var ap = new ArteParser(url);
-    ap.fetchData();
+    //ap.fetchData();
 
 
     // called when the TV program data are all fetched
     ap.onLoaded( function(programData){
       console.log(programData);
+      var duration = " <i>(" + Math.round(programData.duration / 60) + "min.)</i>"
+      document.getElementById("programTitle").innerHTML = programData.title;
+      document.getElementById("programAbstract").innerHTML = programData.abstractLong + duration;
+      document.getElementById("background").style.background = "#000000 url('" + programData.cover + "') no-repeat center center ";
+      document.getElementById("background").style.backgroundSize = "cover";
+
+      var videoSelector = document.getElementById("videoVersion");
+
+      for(var i=0; i<programData.videoList.length; i++){
+
+        var videoInfo = programData.videoList[i];
+        var label = videoInfo.label + " (" + videoInfo.width + "x" + videoInfo.height+ ")"
+
+
+        var option = document.createElement("option");
+        option.text = label;
+        option.value = videoInfo.url;
+        videoSelector.add(option);
+      }
+
+
 
       // Optional: Fetching the suggestions can be done only when the data for _this_ program are fetched
-      //ap.fetchSuggestions();
+      ap.fetchSuggestions();
     });
 
     ap.onNotValid( function(){
@@ -152,12 +248,12 @@
       console.log(msg);
     });
 
-    /*
+
     // Since we called ap.fetchSuggestions() earlier, we have to deal with the result, here an array
     ap.onSuggestionsFetched( function(programDataArray){
       console.log(programDataArray);
     })
-    */
+
 
     ap.run();
   }
