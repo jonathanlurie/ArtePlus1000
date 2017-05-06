@@ -101,7 +101,9 @@
   }
 
   #videoInfo #programAbstract {
-    width: 95%;
+    width: 90%;
+    padding-left: 5%;
+    padding-right: 5%;
     height: 25%;
     text-align: center;
     font-size: large;
@@ -235,8 +237,6 @@
 
     // create an instance of ArteParser
     var ap = new ArteParser(url);
-    //ap.fetchData();
-
 
     // called when the TV program data are all fetched
     ap.onLoaded( function(programData){
@@ -248,6 +248,11 @@
       document.getElementById("background").style.backgroundSize = "cover";
 
       var videoSelector = document.getElementById("videoVersion");
+
+
+      while (videoSelector.firstChild) {
+        videoSelector.removeChild(videoSelector.firstChild);
+      }
 
       for(var i=0; i<programData.videoList.length; i++){
 
