@@ -17,6 +17,9 @@
 
   }
 
+  a {
+    text-decoration: none;
+  }
 
   #background {
     position: absolute;
@@ -88,7 +91,6 @@
     position: relative;
     width: 100%;
     height: 55%;
-    background-color: #FAA;
   }
 
   #videoInfo #programTitle {
@@ -99,32 +101,55 @@
   }
 
   #videoInfo #programAbstract {
-    width: 100%;
-    height: 30%;
+    width: 95%;
+    height: 25%;
     text-align: center;
     font-size: large;
   }
 
+  #buttonSection {
+    width: 100%;
+    height: 50%;
+    display: flex;
+    transition: all 0.2s;
+    display: none;
+  }
+
   #videoVersion {
     width: 70%;
-    height: 15%;
-    margin-top: 2%;
-    margin-bottom: 2%;
-    font-size: xx-large;
+    height: 25%;
+    font-size: x-large;
     margin-left: 15%;
-    margin-right: 15%;
+    margin-right: 10px;
     color: #ff5f36;
     border-color: #a03f27;
+    margin-top: 5%;
+
   }
 
   #downloadBt {
-    background-color: antiquewhite;
-height: 15%;
-width: 30%;
-margin-left: 35%;
-margin-right: 35%;
-/* margin-top: 3%; */
+    background-color: rgba(255, 255, 255, 0.5);
+    height: 25%;
+    width: 30%;
+    margin-right: 15%;
+    margin-left: 10px;
+    margin-top: 5%;
+    font-size: xx-large;
+    text-align: center;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #a03f27;
+    color: #ff5f36;
+    transition: all 0.2s;
+    cursor: pointer;
   }
+
+  #downloadBt:hover {
+    color: #a03f27;
+    background-color: #ff5f36;
+  }
+
+
 
   </style>
 
@@ -151,12 +176,15 @@ margin-right: 35%;
       <div id="programAbstract">
       </div>
 
-      <select id="videoVersion">
-      </select>
+      <div id="buttonSection">
+        <select id="videoVersion" onchange="selectVersion(event)">
+        </select>
 
-      <div id="downloadBt">
-        Télécharger
+        <a id="downloadBt" target="_blank">
+          Télécharger
+        </a>
       </div>
+
 
     </div>
 
@@ -215,7 +243,7 @@ margin-right: 35%;
       console.log(programData);
       var duration = " <i>(" + Math.round(programData.duration / 60) + "min.)</i>"
       document.getElementById("programTitle").innerHTML = programData.title;
-      document.getElementById("programAbstract").innerHTML = programData.abstractLong + duration;
+      document.getElementById("programAbstract").innerHTML = programData.abstractShort + duration;
       document.getElementById("background").style.background = "#000000 url('" + programData.cover + "') no-repeat center center ";
       document.getElementById("background").style.backgroundSize = "cover";
 
@@ -232,6 +260,10 @@ margin-right: 35%;
         option.value = videoInfo.url;
         videoSelector.add(option);
       }
+
+      document.getElementById("downloadBt").href = programData.videoList[0].url;
+
+      document.getElementById("buttonSection").style.display = "flex";
 
 
 
@@ -282,6 +314,11 @@ margin-right: 35%;
     console.log(programDataArray);
   })
 */
+
+  function selectVersion(e){
+    document.getElementById("downloadBt").href = e.target.value;
+  }
+
   </script>
 </body>
 </html>
